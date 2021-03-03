@@ -1,22 +1,22 @@
 var mongoose = require('mongoose');
 
-var ReceiptSchema = new mongoose.Schema({
+var RecipeSchema = new mongoose.Schema({
   title: String,
   stars: {type: Number, default: 1},
-  ingredientsPerPerson: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ReceiptIngredient' }],
+  ingredientsPerPerson: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RecipeIngredient' }],
   steps: [{ type: String }]
 }, {timestamps: true});
 
 
-ReceiptSchema.methods.updateStars = function(stars) {
-  var receipt = this;
+RecipeSchema.methods.updateStars = function(stars) {
+  var recipe = this;
 
-  receipt.stars = stars;
+  recipe.stars = stars;
 
-  return receipt.save();
+  return recipe.save();
 };
 
-ReceiptSchema.methods.toJSONFor = function(){
+RecipeSchema.methods.toJSONFor = function(){
   return {
     slug: this.slug,
     title: this.title,
@@ -28,4 +28,4 @@ ReceiptSchema.methods.toJSONFor = function(){
   };
 };
 
-mongoose.model('Receipt', ReceiptSchema);
+mongoose.model('Recipe', RecipeSchema);

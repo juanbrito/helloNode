@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 
-var ReceiptIngredientSchema = new mongoose.Schema({
+var RecipeIngredientSchema = new mongoose.Schema({
   name: String,
   amount: {type: Number, default: 0},
   amountUnit: String
 }, {timestamps: true});
 
-ReceiptIngredientSchema.methods.toJSONFor = function(){
+RecipeIngredientSchema.methods.toJSONFor = function(){
   return {
     slug: this.slug,
     name: this.name,
@@ -17,4 +17,4 @@ ReceiptIngredientSchema.methods.toJSONFor = function(){
   };
 };
 
-mongoose.model('ReceiptIngredient', ReceiptIngredientSchema);
+mongoose.model('RecipeIngredient', RecipeIngredientSchema);
