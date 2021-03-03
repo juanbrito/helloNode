@@ -38,8 +38,8 @@ if(isProduction){
 }
 
 require('./models/User');
-require('./models/Article');
-require('./models/Comment');
+require('./models/Receipt');
+require('./models/ReceiptIngredient');
 require('./config/passport');
 
 app.use(require('./routes'));
