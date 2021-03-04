@@ -1,0 +1,3 @@
+db.recipes.insertOne({"title":"Arroz con Pollo","steps":["Picar cebolla","Cortar tomate"],"stars":4,"ingredientsPerPerson":[{"name":"Cebolla","amount":0.5,"amountUnit":"Kg"},{"name":"Tomate","amount":1,"amountUnit":"Kg"}]})
+db.recipes.insertOne({"title":"Ñoquis de batata","steps":["Cortar batatas","Hervir batatas", "Darle forma de ñoqui"],"stars":3,"ingredientsPerPerson":[{"name":"Batata","amount":1,"amountUnit":"Unidad"}, {"name":"Crema","amount":0.5,"amountUnit":"Envase"}]})
+db.recipes.insertOne({"title":"Brownie","steps":["Ir al super","Comprar un paquete exquisita para brownie", "Segui las instruccinoes"],"stars":5,"ingredientsPerPerson":[{"name":"Paquete de brownie","amount":0.25,"amountUnit":"Paquetes"}]})
