@@ -18,7 +18,6 @@ RecipeSchema.methods.updateStars = function(stars) {
 
 RecipeSchema.methods.toJSONFor = function(){
   return {
-    slug: this.slug,
     title: this.title,
     stars: this.stars,
     ingredientsPerPerson: this.ingredientsPerPerson,

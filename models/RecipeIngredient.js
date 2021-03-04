@@ -8,7 +8,6 @@ var RecipeIngredientSchema = new mongoose.Schema({
 
 RecipeIngredientSchema.methods.toJSONFor = function(){
   return {
-    slug: this.slug,
     name: this.name,
     amount: this.amount,
     amountUnit: this.amountUnit,
