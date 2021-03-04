@@ -1,5 +1,6 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
+const { ObjectID } = require( 'mongodb' )
 var Recipe = mongoose.model('Recipe');
 var RecipeIngredient = mongoose.model('RecipeIngredient');
 var auth = require('../auth');
@@ -53,18 +54,31 @@ router.put('/:recipe/stars', auth.required, function(req, res, next) {
 });
 
 router.get('/:recipe/ingredients', auth.optional, function(req, res, next){
-  return req.recipe.populate({
-    path: 'recipeIngredients',
-    options: {
-      sort: {
-        createdAt: 'desc'
-      }
-    }
-  }).execPopulate().then(function(recipe) {
-    return res.json({recipeIngredients: req.recipe.recipeIngredients.map(function(recipeIngredient){
-      return recipeIngredient.toJSONFor();
-    })});
+  return req.recipe.populate('ingredientsPerPerson').execPopulate().then(async function(recipe) {
+        var ingredientsPerPerson = await Promise.all(recipe.populated('ingredientsPerPerson').map(async function(ingredientPerPersonObjectId){
+          var a = await RecipeIngredient.findById(ingredientPerPersonObjectId.toString());
+
+          console.log(a)
+          
+          return await RecipeIngredient.findById(ingredientPerPersonObjectId.toString());
+        }));
+
+      return res.json({recipeIngredients: ingredientsPerPerson.map(function(ingredientPerPerson){  
+          ingredientPerPerson.amount = ingredientPerPerson.amount * (req.query.dinersCount !== 'undefined' ? req.query.dinersCount : 1);
+
+          return ingredientPerPerson.toJSONFor();
+      })});
   }).catch(next);
+});
+
+router.get('/:recipe/steps', auth.optional, function(req, res, next){
+  return res.json(
+    {
+      steps: req.recipe.steps.map(function(step) {
+        return step;
+      })
+    } 
+  )
 });
 
 module.exports = router;
