@@ -16,42 +16,20 @@ router.param('recipe', function(req, res, next, id) {
     }).catch(next);
 });
 
-router.param('recipeIngredient', function(req, res, next, id) {
-  RecipeIngredient.findById(id).then(function(recipeIngredient){
-    if(!recipeIngredient) { return res.sendStatus(404); }
-
-    req.recipeIngredient = recipeIngredient;
-
-    return next();
-  }).catch(next);
-});
-
 router.get('/', auth.optional, function(req, res, next) {
   var query = {};
-  var limit = 20;
-  var offset = 0;
-
-  if(typeof req.query.limit !== 'undefined'){
-    limit = req.query.limit;
+  
+  if(req.query.term !== 'undefined'){
+    query = { $or:[ 
+      { 'title' : { '$regex': req.query.term, "$options": "i" } },
+      { 'ingredientsPerPerson.name' : { '$regex': req.query.term, "$options": "i" } } 
+    ] };
   }
 
-  if(typeof req.query.offset !== 'undefined'){
-    offset = req.query.offset;
-  }
-
-  if( typeof req.query.name !== 'undefined' ){
-    query.name = {"$in" : [req.query.name]};
-  }
-
-  Promise.all([
-    Recipe.find(query)
-      .limit(Number(limit))
-      .skip(Number(offset))
-      .sort(req.query.byStars ? {stars: req.query.byStarsAsc ? 'asc' : 'desc'} : {createdAt: 'desc'})
+  Recipe.find(query)
+      .sort((req.query.byStars !== 'undefined' && req.query.byStars) ? {stars: (req.query.byStarsAsc !== 'undefined' && req.query.byStarsAsc) ? 'asc' : 'desc'} : {createdAt: 'desc'})
       .exec()
-  ]).then(function(results){
-    var recipes = results[0];
-
+  .then(function(recipes){
     return res.json({
       recipes: recipes.map(function(recipe){
         return recipe.toJSONFor();
@@ -59,7 +37,6 @@ router.get('/', auth.optional, function(req, res, next) {
     });
   }).catch(next);
 });
-
 
 router.get('/:recipe', auth.optional, function(req, res, next) {
   return res.json({recipe: req.recipe.toJSONFor()});
