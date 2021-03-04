@@ -4,10 +4,11 @@ var RecipeIngredientSchema = new mongoose.Schema({
   name: String,
   amount: {type: Number, default: 0},
   amountUnit: String
-}, {timestamps: true});
+});
 
 RecipeIngredientSchema.methods.toJSONFor = function(){
   return {
+    id: this._id,
     name: this.name,
     amount: this.amount,
     amountUnit: this.amountUnit,
@@ -16,4 +17,4 @@ RecipeIngredientSchema.methods.toJSONFor = function(){
   };
 };
 
-mongoose.model('RecipeIngredient', RecipeIngredientSchema);
+mongoose.model('RecipeIngredient', RecipeIngredientSchema, 'recipeIngredients');

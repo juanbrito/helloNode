@@ -7,7 +7,6 @@ var RecipeSchema = new mongoose.Schema({
   steps: [{ type: String }]
 }, {timestamps: true});
 
-
 RecipeSchema.methods.updateStars = function(stars) {
   var recipe = this;
 
@@ -18,12 +17,10 @@ RecipeSchema.methods.updateStars = function(stars) {
 
 RecipeSchema.methods.toJSONFor = function(){
   return {
+    id: this._id,
     title: this.title,
     stars: this.stars,
-    ingredientsPerPerson: this.ingredientsPerPerson,
-    steps: this.steps,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt
+    createdAt: this.createdAt
   };
 };
 
