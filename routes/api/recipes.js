@@ -28,7 +28,7 @@ router.get('/', auth.optional, function(req, res, next) {
   }
 
   Recipe.find(query)
-      .sort((req.query.byStars !== 'undefined' && req.query.byStars) ? {stars: (req.query.byStarsAsc !== 'undefined' && req.query.byStarsAsc) ? 'asc' : 'desc'} : {createdAt: 'desc'})
+      .sort((req.query.byStars !== 'undefined' && req.query.byStars) ? {stars: ((req.query.byStarsAsc !== 'undefined' && req.query.byStarsAsc) ? 'asc' : 'desc')} : {createdAt: 'desc'})
       .exec()
   .then(function(recipes){
     return res.json({
@@ -58,8 +58,6 @@ router.get('/:recipe/ingredients', auth.optional, function(req, res, next){
         var ingredientsPerPerson = await Promise.all(recipe.populated('ingredientsPerPerson').map(async function(ingredientPerPersonObjectId){
           var a = await RecipeIngredient.findById(ingredientPerPersonObjectId.toString());
 
-          console.log(a)
-          
           return await RecipeIngredient.findById(ingredientPerPersonObjectId.toString());
         }));
 
