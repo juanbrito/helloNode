@@ -17,18 +17,31 @@ router.param('recipe', function(req, res, next, id) {
     }).catch(next);
 });
 
-router.get('/', auth.optional, function(req, res, next) {
+router.get('/', auth.optional, async function(req, res, next) {
   var query = {};
   
   if(req.query.term !== 'undefined'){
+    var queryForIngredients = { 'name' : { '$regex': req.query.term, "$options": "i" } };
+
+    var ingredients = await RecipeIngredient.find(queryForIngredients).exec();
+    var ingredientsIds = ingredients.map(function(ingredient){
+      //return new ObjectID(ingredient.id);
+      return ingredient.id;
+    })
+
     query = { $or:[ 
       { 'title' : { '$regex': req.query.term, "$options": "i" } },
-      { 'ingredientsPerPerson.name' : { '$regex': req.query.term, "$options": "i" } } 
+      { 'ingredientsPerPerson' : { '$in': ingredientsIds } } 
     ] };
   }
 
   Recipe.find(query)
-      .sort((req.query.byStars !== 'undefined' && req.query.byStars) ? {stars: ((req.query.byStarsAsc !== 'undefined' && req.query.byStarsAsc) ? 'asc' : 'desc')} : {createdAt: 'desc'})
+      .sort(
+        (
+          req.query.byStars !== 'undefined' && req.query.byStars) ? 
+            {stars: (req.query.byStarsAscDesc !== 'undefined' ? req.query.byStarsAscDesc : 'desc')} :
+            {createdAt: 'desc'}
+        )
       .exec()
   .then(function(recipes){
     return res.json({
