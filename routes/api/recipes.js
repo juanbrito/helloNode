@@ -4,7 +4,6 @@ const { ObjectID } = require( 'mongodb' )
 var Recipe = mongoose.model('Recipe');
 var RecipeIngredient = mongoose.model('RecipeIngredient');
 
-// Preload recipe objects on routes with ':recipe'
 router.param('recipe', function(req, res, next, id) {
   Recipe.findById(id)
     .then(function (recipe) {
