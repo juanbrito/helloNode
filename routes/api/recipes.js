@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 const { ObjectID } = require( 'mongodb' )
 var Recipe = mongoose.model('Recipe');
 var RecipeIngredient = mongoose.model('RecipeIngredient');
-var auth = require('../auth');
 
 // Preload recipe objects on routes with ':recipe'
 router.param('recipe', function(req, res, next, id) {
@@ -17,7 +16,7 @@ router.param('recipe', function(req, res, next, id) {
     }).catch(next);
 });
 
-router.get('/', auth.optional, async function(req, res, next) {
+router.get('/', async function(req, res, next) {
   var query = {};
   
   if(req.query.term !== 'undefined'){
@@ -52,11 +51,11 @@ router.get('/', auth.optional, async function(req, res, next) {
   }).catch(next);
 });
 
-router.get('/:recipe', auth.optional, function(req, res, next) {
+router.get('/:recipe', function(req, res, next) {
   return res.json({recipe: req.recipe.toJSONFor()});
 });
 
-router.put('/:recipe/stars', auth.required, function(req, res, next) {
+router.put('/:recipe/stars', function(req, res, next) {
   if(typeof req.body.stars !== 'undefined'){
     req.recipe.stars = req.body.stars;
   }
@@ -66,7 +65,7 @@ router.put('/:recipe/stars', auth.required, function(req, res, next) {
   }).catch(next);
 });
 
-router.get('/:recipe/ingredients', auth.optional, function(req, res, next){
+router.get('/:recipe/ingredients', function(req, res, next){
   return req.recipe.populate('ingredientsPerPerson').execPopulate().then(async function(recipe) {
         var ingredientsPerPerson = await Promise.all(recipe.populated('ingredientsPerPerson').map(async function(ingredientPerPersonObjectId){
           var a = await RecipeIngredient.findById(ingredientPerPersonObjectId.toString());
@@ -82,7 +81,7 @@ router.get('/:recipe/ingredients', auth.optional, function(req, res, next){
   }).catch(next);
 });
 
-router.get('/:recipe/steps', auth.optional, function(req, res, next){
+router.get('/:recipe/steps', function(req, res, next){
   return res.json(
     {
       steps: req.recipe.steps.map(function(step) {
