@@ -1,9 +1,15 @@
 var mongoose = require('mongoose');
 
+var RecipeIngredientSchema = new mongoose.Schema({
+  name: String,
+  amount: {type: Number, default: 0},
+  amountUnit: String
+});
+
 var RecipeSchema = new mongoose.Schema({
   title: String,
   stars: {type: Number, default: 1},
-  ingredientsPerPerson: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RecipeIngredient' }],
+  ingredientsPerPerson: [RecipeIngredientSchema],
   steps: [{ type: String }]
 }, {timestamps: true});
 

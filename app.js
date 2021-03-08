@@ -24,7 +24,6 @@ mongoose.connect('mongodb://localhost/recipesApp');
 mongoose.set('debug', true);
 
 require('./models/Recipe');
-require('./models/RecipeIngredient');
 
 app.use(require('./routes'));
 
